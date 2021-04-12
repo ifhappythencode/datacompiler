@@ -27,4 +27,4 @@
 ##### user of python dictionaries `{}` to keep insert and keep track of mapping the master ids to the specific test system ids
 ###### (Note: the dictionary is also used as a data structure to collate the test results
 
-####### Additional information and inspiration provided by (W3Schools) [https://www.w3schools.com/python/]
+####### Additional information and inspiration provided by [W3Schools] (https://www.w3schools.com/python/)
