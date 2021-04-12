@@ -1,10 +1,18 @@
-#### datacompiler project
+#### *datacompiler project*
 
-##### The purpose of the datacompiler project is to be able quickly map a set of test ids to their test results
-##### This is accomplished by creating a local database of master and specific test items...
-##### ...and then iterating through a set of test results to compile the data
+##### >The purpose of the datacompiler project is to be able quickly map a set of test ids to their test results
+##### >This is accomplished by creating a local database of master and specific test items...
+##### >...and then iterating through a set of test results to compile the data
 
 ##### The required python knowledge needed to implement the datacompiler includes the follows elements:
+###### - import statements
+###### - file io
+###### - lists
+###### - dictionaries
+###### - conditional loops (if, for, while)
+###### - find
+
+
 ##### `import` statements to include necessary libraries including `os` for handling file name inputation
 ##### use of `with open(filename, 'r') as f` to read in existing files
 ###### (Note: this structure will close the file automatically after completion)
@@ -26,6 +34,7 @@
 
 ##### user of python dictionaries `{}` to keep insert and keep track of mapping the master ids to the specific test system ids
 ###### (Note: the dictionary is also used as a data structure to collate the test results
+
 
 ###### Additional information and inspiration provided by [W3Schools](https://www.w3schools.com/python/)
 
