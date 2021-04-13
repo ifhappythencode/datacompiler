@@ -31,7 +31,7 @@ The required python knowledge needed to implement the datacompiler includes the 
 
 - `f.read()` to extract information from a file and place into as a string variable
 
-- `[]` for handling array operations
+- `[]` for defining and creating lists of test ids
 
 - `list.append(item)` to add items incrementally to an array
 
