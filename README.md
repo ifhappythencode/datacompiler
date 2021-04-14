@@ -54,6 +54,7 @@ In order to create the index, we need the following:
 - `Master Items` which contains the master test system ids and names
 - `Specific Items of Test System(s)` which contain the specicic test system ids and names
 - Identify the specific test system of each results file
+- `testResultOptions` containing values that we are looking for in the specific test system results
 - Gather the results and associate them with the master items
 - Create a database of the organized information
 
