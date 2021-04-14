@@ -29,6 +29,8 @@ for each in subfilesTestResults:
 print(files)
 
 # Create possible test result choices
+# This could be any categorical information
+# Examples: T/F results, P/F results, Selection choices, etc.
 testResultOptions = ["True", "False"]
 
 # Create an empty list and add only .txt files to it
