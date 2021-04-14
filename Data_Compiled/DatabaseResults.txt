@@ -1,0 +1,8 @@
+System A Results
+ID1: True, ID2: True, ID3: True, ID4: True, ID5: False
+System B Results
+ID1: True, ID2: False, ID3: True, ID4: False, ID5: False
+System C Results
+ID1: False, ID2: True, ID3: True, ID4: False, ID5: False
+System D Results
+ID1: True, ID2: True, ID3: True, ID4: True, ID5: True
