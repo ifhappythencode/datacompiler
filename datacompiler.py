@@ -1,60 +1,64 @@
 # Definitions:
 # Master Test Item IDs - the unified test ids coming from the master specification
-# Specific Test System Item IDs - the unique implementation test ids coming from each of the implementers
+# Master Test Item Names - the unified test names coming from the master specification
+# Specific Test System Item IDs - the unique implementation test ids coming from each test system
+# Specific Test System Item Names - the unique implementation test names coming from each test system
 
-# Find files in a directory
-#
-# -- Python needed for this step:
-#
-# -- -- Importing OS commands
+# Intended final datastructure for databaseResults
+# databaseIDs => {ID#_of_master: [{Specific System#: ID#, Specific System#: ID#, ...}, 'Unified_Name'], ...}
+# databaseResults => Specific System # - {ID#: Result, ID#: Result, ...}; Specific System # - {ID#: Result, ID#: Result, ...} ...
+
+# Import necessary libraries for accessing local file system
 import os
-# Important to use \\ such that file path is not interpreted as escape characters
-files = os.listdir("C:\\Users\\PC\\Desktop\\Python Programs Written\\DataCompiler")
 
-# Create an empty list
+# Obtain the current working directory
+cwd = os.getcwd()
+
+# Obtain all files in test directory, use \\ such that file path is not interpreted as escape characters
+files = os.listdir(cwd)
+
+# Add the files in the subdirectories
+subfilesTestItems = os.listdir(cwd+"\Test_Items")
+for each in subfilesTestItems:
+    files.append(cwd+"\Test_Items"+"\\"+each)
+
+subfilesTestResults = os.listdir(cwd+"\Test_Results")
+for each in subfilesTestResults:
+    files.append(cwd+"\Test_Results"+"\\"+each)
+
+print(files)
+
+# Create possible test result choices
+testResultOptions = ["True", "False"]
+
+# Create an empty list and add only .txt files to it
 fileList = []
-
-# Prune the list to only include files with extension *.txt
 for each in files:
     if "txt" in each:
         fileList.append(each)
 
-# Create / load in an index of universal test item ids and names
-#
-# -- Python needed for this step:
-#
-# -- -- List / Array
-# -- -- Format: [item1, item2, item3]
-#
-# -- -- Input Box
-# -- -- Format: input()
-#
-# -- -- File / Local Database
-# -- -- Format: with open(filename, 'r') as f:
-# -- -- Format: with open(filename, 'w') as f:
-
-
-# Find the master test item id file
-masterFile = []
-
+# Load the master input file into memory
 for each in fileList:
-    if "master" in each.lower():
+    if "masterinputtestitems" in each.lower():
         with open(each, 'r') as f:
             masterFile = f.read()
 
 # Create a master item id list
 masterItemId = []
+# Create a master item name list
+masterItemName = []
 
-# Find all the test item ids in the master file
+# Find all the test item info in the master file
 while (len(masterFile) != 0):
     # Define the end position of a line by finding the newline character
     new = masterFile.find("\n")
     if (new != -1):
         # Check to see if an ID field is contained on that line
-        pos = masterFile[:new].find("ID")
+        pos = masterFile[:new].find(":")
         if (pos != -1):
-            # If an ID field exists, add it to the master item list
-            masterItemId.append(masterFile[pos:new])
+            # If an ID field exists, add the Id and Name to their respective lists
+            masterItemId.append(masterFile[:pos])
+            masterItemName.append(masterFile[pos+2:new])
             # Update the search position in the file
             masterFile = masterFile[new + 1:]
         else:
@@ -64,33 +68,32 @@ while (len(masterFile) != 0):
         # When no more newlines are found, the file is empty and no more logic needs to be performed
         masterFile = ""
 
-# Write a master file of all test ids
-
-with open("C:\\Users\\PC\\Desktop\\Python Programs Written\\DataCompiler\\MasterItemList.txt", "w") as f:
-    for each in masterItemId:
-        f.write(each)
+# Write a master file of all test ids with their names
+with open(cwd + "\\MasterItemList.txt", "w") as f:
+    for num in range(len(masterItemId)):
+        f.write(masterItemId[num])
+        f.write(": ")
+        f.write(masterItemName[num])
         f.write("\n")
 
-# Create a specific test item id list
+# Create a list of all of the specific test system item info files
 specificTestItemList = []
 
 for each in files:
-    if "specific" in each.lower():
+    if ("system" in each.lower() and "items" in each.lower() and not "specificitemlist" in each.lower()):
         # Add an empty array for each specific test id set
+        print(each)
         specificTestItemList.append(each)
-
-if "SpecificItemList.txt" in specificTestItemList:
-    specificTestItemList.remove("SpecificItemList.txt")
-
 
 # Create a specific item id dictionary
 specificTestItemIds = {}
 
 for each in specificTestItemList:
 
-    testSystemName = each[:each.find(".txt")]
+    testSystemName = each[len(cwd+"\Test_Items")+1:each.find(".txt")]
     
     # Add another special test id to the dictionary
+	# the testSystemName is simply the name of the file that describes the test system ids
     specificTestItemIds[testSystemName] = []
     
     with open(each, 'r') as f:
@@ -114,10 +117,11 @@ for each in specificTestItemList:
             # When no more newlines are found, the file is empty and no more logic needs to be performed
             specificFile = ""
 
-
 # Write a specific test system file of all test ids
 
-with open("C:\\Users\\PC\\Desktop\\Python Programs Written\\DataCompiler\\SpecificItemList.txt", "w") as f:
+print(specificTestItemIds)
+
+with open(cwd + "\\SpecificItemList.txt", "w") as f:
     for testSystem, testIds in specificTestItemIds.items():
         f.write(testSystem)
         f.write("\n")
@@ -125,61 +129,97 @@ with open("C:\\Users\\PC\\Desktop\\Python Programs Written\\DataCompiler\\Specif
             f.write(each)
             f.write("\n")
 
-
-
-
-
-
 #print(masterItemId)
 #print(specificTestItemIds)
 
+masterItemIdList = []
+masterItemNameList = []
+
+
 for each in masterItemId:
-    print("Master Item ID:")
-    print(each[:each.find("ID")+3])
-    print("Master Item Test Name:")
-    print(each[each.find(":")+2:])
+    #print("Master Item ID:")
+    #print(each[:each.find("ID")+3])
+    masterItemIdList.append(each[:each.find("ID")+3])
+    #print("Master Item Test Name:")
+    #print(each[each.find(":")+2:])
+    masterItemNameList.append(each[each.find(":")+2:])
 
     for key , value in specificTestItemIds.items():
         for every in value:
             if (every[:every.find("ID")+3] == each[:each.find("ID")+3]):
-                print(key + " Test Name:")
-                print(every[every.find(":")+2:])
+                None
+                #print(key + " Test Name:")
+                #print(every[every.find(":")+2:])
 
-    print("\n")
+    #print("\n")
 
+# Create an array of all of the specific test items
+specificTestSystems = []
 
+print("specificTestItemList")
+print(specificTestItemList)
 
-for each in fileList:
-    if "sampledata" in each.lower():
-        with open(each, 'r') as f:
-            masterFile = f.read()
+for each in specificTestItemList:
+    specificTestSystems.append(each[each.find("System")+len("System"):each.find("System")+len("System")+1])
 
+print("specificTestSystems")
+print(specificTestSystems)
+#print(fileList)
+#print(specificTestSystems)
 
-        
+databaseResults = {}
 
-        
-# -- Material needed for this step:
-# -- -- Documentation: Names of test item ids, categorized by test type
-# -- -- Documentation: Names of test item names, corrseponding to ids
-
-# Create an index of specific test system ids and names
-# -- Python needed for this step:
-# -- -- List / Array
-
-# Determine file names
-
-# Loop through each of the files
-
-# Add cases to a set of items to look for
-
-# Read in the text in the file
-
-# Find the position of the 'key'
-
-# Search a substring of the text, starting at the position of the key
-
-# Find a 'value' from a list of possible choices
+#print("masterItemId")
+#print(masterItemId)
+#print(masterItemIdList)
 
 # Create a unified table of test results from all test systems
+# Loop through each test system
 
+#print("SpecificTestSystems:::::")
+#print(specificTestSystems)
 
+for each in fileList:
+    # Loop through each of the test systems
+    for every in specificTestSystems:
+        #print(each.lower())
+        #print(every)
+        if ("system" + every.lower() in each.lower() and "result" in each.lower()):
+            systemResultName = "System " + every + " Results"
+            #print("here")
+            #print(databaseResults)
+            databaseResults[systemResultName] = {}
+            with open(each, 'r') as f:
+                testResult = f.read()
+                #print("Test Result")
+                #print(testResult)
+
+            for id in masterItemIdList:
+                #print(every)
+                #print(id)
+                #print(every)
+                #print(id)
+                result = testResult[testResult.find(id):][testResult[testResult.find(id):].find(id)+5:testResult[testResult.find(id):].find("\n")-1]
+                if (result in testResultOptions):
+                    databaseResults[systemResultName][id] = testResult[testResult.find(id):][testResult[testResult.find(id):].find(id)+5:testResult[testResult.find(id):].find("\n")-1]
+            #print(testResult)
+
+# Write unified set of results
+with open(cwd + "\\Data_Compiled\\DatabaseResults.txt", "w") as f:
+    #print(databaseResults)
+    # Print out master table
+    for keyA, valueA in databaseResults.items():
+        print(keyA)
+        f.write(keyA)
+        f.write("\n")
+        print(valueA)
+        counter = len(valueA)
+        for keyB, valueB in valueA.items():
+            f.write(keyB)
+            f.write(": ")
+            f.write(valueB)
+            counter -= 1
+            if (counter != 0):
+                f.write(", ")
+            else:
+                f.write("\n")
